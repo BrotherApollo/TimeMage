@@ -1,21 +1,23 @@
-import discord
-from discord.ext import commands
 import logging
 import os
+
+import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from discord.ext import commands
+
+from src.meme import dadjoke, generate_excuse, get_reacts, random_meme
 
 # Local Imports
 from src.timecard import summarize_payperiod, timecard_reminder
-from src.meme import random_meme, get_reacts, generate_excuse, dadjoke
 
 TOKEN = os.getenv("DISCORD_TOKEN", "")
-APPROVED_CHANNELS = [
-        1451552389181214911, # Test Channel
-        1349895419513143317, # Studies Timecard Channel
-        1430574832436645939, # Lobsters Timecard Channel
-        1536524641613643776, # Dad Joke Channel
-    ]
+APPROVED_CHANNELS = {
+        1451552389181214911: {"reminders": False}, # Test Channel
+        1349895419513143317: {"reminders": True}, # Studies Timecard Channel
+        1430574832436645939: {"reminders": True}, # Lobsters Timecard Channel
+        1536524641613643776: {"reminders": False}, # Dad Joke Channel
+}
 
 # Scheduler
 scheduler = AsyncIOScheduler()
@@ -100,6 +102,9 @@ async def on_message(message: discord.Message):
 # Scheduled Reminders
 async def send_start_timecard_reminder():
     for channelid in APPROVED_CHANNELS:
+        # only sending to channels with reminder flag
+        if not APPROVED_CHANNELS[channelid]["reminders"]:
+            continue
         channel = bot.get_channel(channelid)
         await channel.send(
             "If you haven't started a timecard this pay period, please fix that today."
@@ -109,6 +114,9 @@ async def send_start_timecard_reminder():
 async def send_timecard_reminder():
     """Post timecard reminders in a specific channel"""
     for channelid in APPROVED_CHANNELS:
+        # only sending to channels with reminder flag
+        if not APPROVED_CHANNELS[channelid]["reminders"]:
+            continue
         channel = bot.get_channel(channelid)
         await channel.send(timecard_reminder())
 

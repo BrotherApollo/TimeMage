@@ -7,7 +7,7 @@ Scheduled Messages:
 
 Commands:
 - `!timecard` - Returns a brief summary of the current pay period including
-number of hours and holidays in teh pay period
+number of hours and holidays in the pay period
 - `!meme` - Sends a random timecard meme from /assets/memes
 - `!excuse` - Generates a random excuse
 - `!joke` - Sends a random dad joke from [icanhazdadjoke API](https://icanhazdadjoke.com/)
