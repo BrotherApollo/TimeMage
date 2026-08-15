@@ -1,5 +1,7 @@
-import random
 import os
+import random
+
+import requests
 
 meme_history = []
 
@@ -67,3 +69,15 @@ def generate_excuse():
         "and I reported it as phishing.",
     ]
     return f"{random.choice(subjects)} {random.choice(verbs)} {random.choice(objects)} {random.choice(modifiers)}"
+
+def dadjoke():
+    """Get a dad joke from icanhazdadjoke.com"""
+    
+    response = requests.get(
+        "https://icanhazdadjoke.com/",
+        headers={"Accept": "application/json"}
+    )
+    
+    if response.status_code == 200:
+        joke = response.json()["joke"]
+        return joke

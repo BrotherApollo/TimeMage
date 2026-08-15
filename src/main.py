@@ -7,13 +7,14 @@ from apscheduler.triggers.cron import CronTrigger
 
 # Local Imports
 from src.timecard import summarize_payperiod, timecard_reminder
-from src.meme import random_meme, get_reacts, generate_excuse
+from src.meme import random_meme, get_reacts, generate_excuse, dadjoke
 
 TOKEN = os.getenv("DISCORD_TOKEN", "")
 APPROVED_CHANNELS = [
         1451552389181214911, # Test Channel
         1349895419513143317, # Studies Timecard Channel
         1430574832436645939, # Lobsters Timecard Channel
+        1536524641613643776, # Dad Joke Channel
     ]
 
 # Scheduler
@@ -52,6 +53,12 @@ async def meme(ctx):
 @bot.command()
 async def excuse(ctx):
     await ctx.send(generate_excuse())
+
+
+# !joke
+@bot.command()
+async def joke(ctx):
+    await ctx.send(dadjoke())
 
 
 # Listeners
