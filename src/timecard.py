@@ -2,17 +2,19 @@
 Datetime logic for Calculating details about payperiods
 """
 
-from datetime import timedelta, date
-from src.holiday import USFedHolidays
-import os
-from dotenv import load_dotenv
 import logging
+import os
+from datetime import date, timedelta
+
+from dotenv import load_dotenv
+
+from src.holiday import USFedHolidays
 
 # Basic configuration
 logging.basicConfig(
     level=logging.INFO,  # controls what level of messages to show
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -20,7 +22,7 @@ load_dotenv()
 EMAIL_AID = os.getenv("EMAIL_AID", "")
 
 
-def build_payperiod(today:date|None= None) -> list[date]:
+def build_payperiod(today: date | None = None) -> list[date]:
     """
     Takes a optional datetime.date object, defalts to today.
 
@@ -29,7 +31,7 @@ def build_payperiod(today:date|None= None) -> list[date]:
     """
     today = today or date.today()
 
-    if today.day <=15:
+    if today.day <= 15:
         start = date(today.year, today.month, 1)
         end = date(today.year, today.month, 15)
     else:
@@ -40,10 +42,8 @@ def build_payperiod(today:date|None= None) -> list[date]:
         else:
             end = date(today.year + 1, 1, 1) - timedelta(days=1)
 
-    return [
-        start + timedelta(days = i)
-        for i in range((end-start).days + 1)
-    ]
+    return [start + timedelta(days=i) for i in range((end - start).days + 1)]
+
 
 def calculate_hours(payperiod: list[date]) -> int:
     """
@@ -51,7 +51,8 @@ def calculate_hours(payperiod: list[date]) -> int:
 
     hours = number of week days * 8
     """
-    return sum((8 for d in payperiod if d.weekday() < 5))
+    return sum(8 for d in payperiod if d.weekday() < 5)
+
 
 def count_holidays(payperiod: list[date]) -> list[str]:
     """
@@ -61,10 +62,11 @@ def count_holidays(payperiod: list[date]) -> list[str]:
     us_holidays = USFedHolidays(years=list(years))
     period_holidays = []
     for d in payperiod:
-        if d in us_holidays.keys():
+        if d in us_holidays:
             period_holidays.append(us_holidays.get(d))
 
     return period_holidays
+
 
 def summarize_payperiod(today=None) -> str:
     """
@@ -78,10 +80,10 @@ def summarize_payperiod(today=None) -> str:
         return f"This payperiod has {hours} hours and {len(period_holidays)} holiday(s): {holidays_str}."
     else:
         return f"This payperiod has {hours} hours with no holidays."
-    
-def timecard_reminder(): 
-    logging.info("firing test reminder")
-    return """
-@everyone it's timecard day. {} 
-If you are having login issues email the following ASAP: {}
-""".format(summarize_payperiod(), EMAIL_AID)
+
+
+def timecard_reminder():
+    return f"""
+@everyone it's timecard day. {summarize_payperiod()} 
+If you are having login issues email the following ASAP: {EMAIL_AID}
+"""

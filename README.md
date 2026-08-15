@@ -3,7 +3,7 @@ Discord bot for Timecard reminders
 
 Scheduled Messages:
 - Reminder to submit timecards on 15th and last day of the month
-- Reminder to start tiem cards on the 2nd and 17th
+- Reminder to start time cards on the 2nd and 17th
 
 Commands:
 - `!timecard` - Returns a brief summary of the current pay period including
@@ -19,5 +19,6 @@ Running pytest locally:
 - install requirements: `pip install -r requirements.txt`
 - run tests: `pytest`
 
-Building:
-- Run `docker compose up --build` from project root
+Building/Running:
+- Run `docker compose up --build` from project root to build and run with changes
+- Run `docker compose up` to just run the container
